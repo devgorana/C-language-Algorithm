@@ -1,0 +1,42 @@
+////////////////////////////////////////////////////
+
+To minimize the total amount of time spent in the system, we can use the Shortest Job First (SJF) scheduling algorithm. This algorithm schedules jobs in ascending order of their service times. Here’s a C++ program to implement this:
+
+///////////////////////////////////////////////////
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Job {
+    int id;
+    int serviceTime;
+};
+
+// Comparator function to sort jobs by their service time
+bool compare(Job a, Job b) {
+    return a.serviceTime < b.serviceTime;
+}
+
+int main() {
+    vector<Job> jobs = {{1, 5}, {2, 10}, {3, 7}, {4, 8}};
+    
+    // Sort jobs by service time
+    sort(jobs.begin(), jobs.end(), compare);
+    
+    int totalTime = 0;
+    int currentTime = 0;
+    
+    cout << "Job execution order: ";
+    for (const auto& job : jobs) {
+        currentTime += job.serviceTime;
+        totalTime += currentTime;
+        cout << job.id << " ";
+    }
+    
+    cout << "\nTotal time spent in the system: " << totalTime << endl;
+    
+    return 0;
+}
