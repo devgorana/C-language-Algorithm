@@ -1,0 +1,104 @@
+////////////////////////////////////////////////////////////////////////
+
+Input : Total time = 3
+        Task1: arrival = 1, units = 2, priority = 300
+        Task2: arrival = 2, units = 2, priority = 100
+Output : 100
+Explanation : Two tasks are given and time to finish 
+them is 3 units. First task arrives at time 1 and it
+needs 2 units. Since no other task is running at that
+time, we take it. 1 unit of task 1 is over. Now task 2 
+arrives. The priority of task 1 is more than task 2 
+(300 > 100) thus 1 more unit  of task 1 is employed. 
+Now 1 unit of time is left and we have 2 units of task
+2 to be done. So simply 1 unit of task 2 is done and 
+the answer is ( units of task 2 left X priority of 
+task 2 ) = 1 X 100 = 100
+
+Input : Total Time = 3
+        Task1: arrival = 1, units = 1, priority = 100
+        Task2: arrival = 2, units = 2, priority = 300
+Output : 0
+
+///////////////////////////////////////////////////////////////////////
+
+
+// C++ code for task scheduling on basis 
+// of priority and arrival time 
+#include "bits/stdc++.h" 
+using namespace std; 
+
+// t is total time. n is number of tasks. 
+// arriv[] stores arrival times. units[] 
+// stores units of time required. prior[] 
+// stores priorities. 
+int minLoss(int n, int t, int arriv[], 
+int units[], int prior[]) 
+{ 
+// Calculating maximum possible answer 
+// that could be calculated. Later we 
+// will subtract the tasks from it 
+// accordingly. 
+int ans = 0; 
+for (int i = 0; i < n; i++) 
+ans += prior[i] * units[i]; 
+
+// Pushing tasks in a vector so that they 
+// could be sorted according with their 
+// arrival time 
+vector<pair<int, int> > v; 
+for (int i = 0; i < n; i++) 
+v.push_back({ arriv[i], i }); 
+
+// Sorting tasks in vector identified by 
+// index and arrival time with respect 
+// to their arrival time 
+sort(v.begin(), v.end()); 
+
+// Priority queue to hold tasks to be 
+// scheduled. 
+priority_queue<pair<int, int> > pq; 
+
+// Consider one unit of time at a time. 
+int ptr = 0; // index in sorted vector 
+for (int i = 1; i <= t; i++) { 
+
+// Push all tasks that have arrived at 
+// this time. Note that the tasks that 
+// arrived earlier and could not be scheduled 
+// are already in pq. 
+while (ptr < n and v[ptr].x == i) { 
+pq.push({ prior[v[ptr].y], units[v[ptr].y] }); 
+ptr++; 
+} 
+
+// Remove top priority task to be scheduled 
+// at time i. 
+if (!pq.empty()) { 
+auto tmp = pq.top(); 
+pq.pop(); 
+
+// Removing 1 unit of task 
+// from answer as we could 
+// schedule it. 
+ans -= tmp.x; 
+tmp.y--; 
+if (tmp.y) 
+	pq.push(tmp); 
+} 
+} 
+
+return ans; 
+} 
+
+// driver code 
+int main() 
+{ 
+int n = 2, t = 3; 
+int arriv[] = { 1, 2 }; 
+int units[] = { 2, 2 }; 
+int prior[] = { 100, 300 }; 
+
+printf("%d\n", minLoss(n, t, arriv, units, prior)); 
+return 0; 
+} 
